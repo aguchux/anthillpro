@@ -33,7 +33,7 @@
                            <td>
                               <div class="d-flex">
                                  <a href="/admin/edit-page/page/<?= $pg->pageid; ?>/<?= $pg->shortname; ?>" class="btn btn-success shadow btn-xs  mr-1"><i class="fa fa-pencil"></i> Edit</a>
-                                 <a href="/admin/page-webparts/page/<?= $pg->pageid; ?>" class="btn btn-primary shadow btn-xs  mr-1"><i class="fa fa-globe"></i> Webparts</a>
+                                 <a href="/admin/page-webparts/page/<?= $pg->pageid; ?>/<?= $pg->shortname; ?>" class="btn btn-primary shadow btn-xs  mr-1"><i class="fa fa-globe"></i> Webparts</a>
                                  <a href="/editor/page/<?= $pg->pageid; ?>" class="btn btn-warning shadow btn-xs  mr-1"><i class="fa fa-pencil"></i> CMS</a>
                                  <a href="/admin/delete-page/page/<?= $pg->pageid; ?>/<?= $pg->shortname; ?>" class="btn btn-danger shadow btn-xs"><i class="fa fa-trash"></i> Delete</a>
                               </div>

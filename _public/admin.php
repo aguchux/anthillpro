@@ -78,7 +78,7 @@ $Route->add('/admin/page-webparts/page/{pageid}/add/{webpart}', function ($pagei
 	$CheckWebParts = $Core->CheckWebParts($pageid, $webpart);
 	if (!$CheckWebParts) {
 		$Db = new Apps\MysqliDb;
-		$Db->insert("noh_webparts", [
+		$Db->insert("webparts", [
 			"page" => $pageid,
 			"webpart" => $webpart,
 		]);
@@ -99,9 +99,9 @@ $Route->add('/admin/page-webparts/page/{pageid}/remove/{webpart}/{webpartid}', f
 	if ($CheckWebParts) {
 
 		$Db = new Apps\MysqliDb;
-		$Db->where("page", $pageid)->where("webpart", $webpart)->delete("noh_webparts", 1);
+		$Db->where("page", $pageid)->where("webpart", $webpart)->delete("webparts", 1);
 
-		$Db->where("pageid", $pageid)->where("webpart", $webpartid)->delete("noh_cms");
+		$Db->where("pageid", $pageid)->where("webpart", $webpartid)->delete("cms");
 
 		$Template->setError("Web Part deleted from the Page successfully", "success", "/admin/page-webparts/page/{$pageid}/{$PageInfo->shortname}");
 		$Template->redirect("/admin/page-webparts/page/{$pageid}/{$PageInfo->shortname}");
@@ -142,13 +142,17 @@ $Route->add('/admin/{route}/page/{pid}/{shortname}', function ($route, $pid, $sh
 		$pageinfo = $Core->LoadPageInfo($shortname);
 		$Template->assign("pageinfo", $pageinfo);
 	} elseif ($route == "webparts") {
+		
 		$Template->assign("title", "List Webparts");
 
 		$pageinfo = $Core->LoadPageInfo($shortname);
 		$Template->assign("pageinfo", $pageinfo);
+	
 	} elseif ($route == "page-webparts") {
 		$Template->assign("title", "Add/Remove Webparts");
-
+		$directory = './templates/webparts/';
+		$WebParts = array_diff(scandir($directory), array('..', '.'));
+		$Template->assign("WebParts", $WebParts);
 		$pageinfo = $Core->LoadPageInfo($shortname);
 		$Template->assign("pageinfo", $pageinfo);
 	}
@@ -252,7 +256,6 @@ $Route->add('/ajax/{cmd}', function ($cmd) {
 			"photo" => $photos
 		]);
 		$Template->redirect("/admin/pages");
-		
 	} elseif ($cmd == 'edit-page') {
 
 		$Post = $Core->post($_POST);
@@ -335,7 +338,6 @@ $Route->add('/ajax/{cmd}', function ($cmd) {
 		}
 
 		$Template->redirect("/admin/edit-page/page/{$pageid}/{$shortname}");
-
 	} elseif ($cmd == 'delete-page') {
 
 		$Post = $Core->post($_POST);
@@ -343,13 +345,12 @@ $Route->add('/ajax/{cmd}', function ($cmd) {
 		$pid = $Post->pageid;
 		$Db = new Apps\MysqliDb;
 
-		$defaultlandingpage = $Db->where("name", "defaultlandingpage")->getOne("noh_settings");
+		$defaultlandingpage = $Db->where("name", "defaultlandingpage")->getOne("settings");
 		$defaultlandingpage = $defaultlandingpage['value'];
 
 		$Db->where("pageid", $pid)->where("pageid", $defaultlandingpage, "!=")->delete("pages", 1);
 
 		$Template->redirect("/admin/pages");
-	
 	} elseif ($cmd == 'settings') {
 
 		$Post = $Core->post($_POST);
