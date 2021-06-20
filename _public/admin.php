@@ -142,12 +142,11 @@ $Route->add('/admin/{route}/page/{pid}/{shortname}', function ($route, $pid, $sh
 		$pageinfo = $Core->LoadPageInfo($shortname);
 		$Template->assign("pageinfo", $pageinfo);
 	} elseif ($route == "webparts") {
-		
+
 		$Template->assign("title", "List Webparts");
 
 		$pageinfo = $Core->LoadPageInfo($shortname);
 		$Template->assign("pageinfo", $pageinfo);
-	
 	} elseif ($route == "page-webparts") {
 		$Template->assign("title", "Add/Remove Webparts");
 		$directory = './templates/webparts/';
@@ -192,9 +191,31 @@ $Route->add('/ajax/{cmd}', function ($cmd) {
 
 	$Core = new Apps\Core;
 	$Template = new Apps\Template;
+	$accid = $Template->storage("accid");
+	$UserInfo = $Core->UserInfo($accid);
 
-	if ($cmd == 'ajax') {
-		$Template->redirect("/admin");
+	if ($cmd == 'profile') {
+		$Post = $Core->post($_POST);
+
+		$password = $UserInfo->password;
+		if (isset($Post->password1) && isset($Post->password2)) {
+			if ($Post->password1 === $Post->password2) {
+				$password = $Post->password1;
+			}
+		}
+
+		$Db = new Apps\MysqliDb;
+		$Db->where("accid", $accid);
+		$done = $Db->update("accounts", [
+			"firstname" => $Post->firstname,
+			"lastname" => $Post->lastname,
+			"email" => $Post->email,
+			"mobile" => $Post->mobile,
+			"password" => $password
+		]);
+
+		$Template->redirect("/admin/profile");
+		
 	} elseif ($cmd == 'add-page') {
 
 		$Post = $Core->post($_POST);
