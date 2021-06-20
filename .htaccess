@@ -1,0 +1,54 @@
+<IfModule mod_rewrite.c>
+
+    RewriteEngine On
+ 	RewriteBase /
+   
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+	<filesMatch ".(jpg|jpeg|png|gif|ico)$">
+	  Header set Cache-Control "max-age=2592000, public"
+	</filesMatch>
+	
+	<IfModule mod_expires.c>
+	  #ExpiresActive on
+	  #ExpiresByType text/css "access plus 1 year"
+	  #ExpiresByType application/javascript "access plus 1 year"
+	</IfModule>
+
+	<IfModule mod_headers.c>
+	  Header always append X-Frame-Options SAMEORIGIN
+	  Header set X-XSS-Protection "1; mode=block"
+	  Header set X-Content-Type-Options nosniff
+	  Header set Referrer-Policy: no-referrer-when-downgrade
+	  Header set Strict-Transport-Security "max-age=31536000" env=HTTPS
+	  Header set Content-Security-Policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com ;font-src 'self' fonts.googleapis.com fonts.gstatic.com"
+	</IfModule>
+	
+	RewriteCond %{HTTPS} !=on
+	RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+	
+	
+</IfModule>
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php70” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php70 .php .php7 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
