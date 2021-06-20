@@ -34,11 +34,11 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Change Password</label>
-                            <input type="password" name="password1" placeholder="Password" class="form-control">
+                            <input type="password" name="password1" placeholder="Password" minlength="4" class="form-control">
                         </div>
                         <div class="form-group col-md-6">
                             <label>Confirm Password</label>
-                            <input type="password" name="password2" placeholder="Password" class="form-control">
+                            <input type="password" name="password2" placeholder="Password" minlength="4" class="form-control">
                         </div>
                     </div>
 

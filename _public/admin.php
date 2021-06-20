@@ -198,7 +198,7 @@ $Route->add('/ajax/{cmd}', function ($cmd) {
 		$Post = $Core->post($_POST);
 
 		$password = $UserInfo->password;
-		if (isset($Post->password1) && isset($Post->password2)) {
+		if (strlen($Post->password1) > 4 && strlen($Post->password2) > 4) {
 			if ($Post->password1 === $Post->password2) {
 				$password = $Post->password1;
 			}
